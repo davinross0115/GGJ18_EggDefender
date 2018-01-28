@@ -7,17 +7,19 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
 
     public float speed;
+    public float damage;
+    public float size;
+    public float range;
     public bool bActive;
 
     Rigidbody _rb;
-
-	// Use this for initialization
+    
 	void Start () {
         _rb = GetComponent<Rigidbody>();
         _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        transform.localScale = new Vector3(size, size, size);
 	}
 	
-	// Update is called once per frame
 	void Update () {
 		if (bActive) {
             GoForward();
@@ -37,11 +39,11 @@ public class Projectile : MonoBehaviour {
     }
 
     private void OnCollisionEnter(Collision collision) {
-        // needs to be changed to the enemy layer
-        if (collision.gameObject.layer == 6) {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("enemy")) {
             // insert code for enemy interaction here
-
+            collision.gameObject.GetComponent<EnemyStats>().TakeDamage(damage);
         }
+        Destroy(gameObject);
         // destroy - call pooling script
     }
 }
